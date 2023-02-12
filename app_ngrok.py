@@ -62,7 +62,7 @@ def getting_form_data():
         Photo.save(os.path.join(app.config['UPLOAD_FOLDER'],"temp.jpg"))
         full_filename=os.path.join(app.config['UPLOAD_FOLDER'],"temp.jpg")
         Photo=asarray(Photo)
-        Photo=cv2.resize(Photo,(256,256,3))
+        Photo=cv2.resize(Photo,(256,256))
         img_batch = np.expand_dims(Photo, 0)
         
         predictions = MODEL.predict(img_batch)

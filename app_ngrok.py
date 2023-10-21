@@ -14,7 +14,6 @@ os.environ["FLASK_ENV"] = "development"
 
 
 
-PEOPLE_FOLDER=os.path.join('static','uploaded_images')
 SUPPORTED_NAMES=['potato']
 STATUS=""
 OUTPUT=[]
@@ -23,15 +22,14 @@ SUPPORTED_CLASS_NAMES= {"potato":["Early Blight", "Late Blight", "Healthy"]}
 
 
 app = Flask(__name__)
-port = 5000
+port = 7860
 # Open a ngrok tunnel to the HTTP server
 public_url = ngrok.connect(port).public_url
-print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}\"".format(public_url, port))
+print(" * ngrok tunnel \"{}\" -> \"http://0.0.0.0:{}\"".format(public_url, port))
 
 # Update any base URLs to use the public ngrok URL
 app.config["BASE_URL"] = public_url
 
-app.config['UPLOAD_FOLDER']=PEOPLE_FOLDER
 
 
 @app.route('/')
@@ -59,10 +57,9 @@ def getting_form_data():
     if Name in SUPPORTED_NAMES :
         CLASS_NAMES = SUPPORTED_CLASS_NAMES[Name]
         Photo=Image.open(request.files['image'])
-        Photo.save(os.path.join(app.config['UPLOAD_FOLDER'],"temp.jpg"))
-        full_filename=os.path.join(app.config['UPLOAD_FOLDER'],"temp.jpg")
+        
         Photo=asarray(Photo)
-        Photo=cv2.resize(Photo,(256,256))
+        Photo=Photo.reshape((256,256,3))
         img_batch = np.expand_dims(Photo, 0)
         
         predictions = MODEL.predict(img_batch)
@@ -71,8 +68,11 @@ def getting_form_data():
         OUTPUT.append(predicted_class)
         confidence = np.max(predictions[0])
         OUTPUT.append(confidence)
-        SRC=full_filename
-        OUTPUT.append(SRC)
+        img_base64 = Image.fromarray(Photo.astype('uint8'))
+        buffered = BytesIO()
+        img_base64.save(buffered, format="JPEG")
+        img_base64_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
+        OUTPUT.append(img_base64_str)
         accuracy=confidence*100
         OUTPUT.append(accuracy)
         return redirect("/prediction_interface")
@@ -80,8 +80,16 @@ def getting_form_data():
 
 @app.route('/prediction_interface')
 def prediction_interface():
-    return render_template('prediction_interface.html' , name=OUTPUT[0],category=OUTPUT[1],confidence=OUTPUT[2],user_image=OUTPUT[3],accuracy=OUTPUT[4])
+    return render_template(
+                            'prediction_interface.html' ,
+                            name=OUTPUT[0],
+                            category=OUTPUT[1],
+                            confidence=OUTPUT[2],
+                            user_image=OUTPUT[3],
+                            accuracy=OUTPUT[4]
+                        )
     
+  
 
 #return render_template('prediction_interface.html' , name=OUTPUT[0],src=OUTPUT[1])
 #return render_template('prediction_interface.html' , name=OUTPUT[0],category=OUTPUT[1],confidence=OUTPUT[2],src=OUTPUT[3])

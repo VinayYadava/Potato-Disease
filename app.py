@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 import tensorflow as tf
 from numpy import asarray
 import os
+import base64
 
 PEOPLE_FOLDER=os.path.join('static','uploaded_images')
 SUPPORTED_NAMES=['potato']
@@ -17,7 +18,6 @@ SUPPORTED_CLASS_NAMES= {"potato":["Early Blight", "Late Blight", "Healthy"]}
 
 app=Flask(__name__)
 
-app.config['UPLOAD_FOLDER']=PEOPLE_FOLDER
 
 
 @app.route('/')
@@ -45,8 +45,7 @@ def getting_form_data():
     if Name in SUPPORTED_NAMES :
         CLASS_NAMES = SUPPORTED_CLASS_NAMES[Name]
         Photo=Image.open(request.files['image'])
-        Photo.save(os.path.join(app.config['UPLOAD_FOLDER'],"temp.jpg"))
-        full_filename=os.path.join(app.config['UPLOAD_FOLDER'],"temp.jpg")
+        
         Photo=asarray(Photo)
         Photo=Photo.reshape((256,256,3))
         img_batch = np.expand_dims(Photo, 0)
@@ -57,8 +56,11 @@ def getting_form_data():
         OUTPUT.append(predicted_class)
         confidence = np.max(predictions[0])
         OUTPUT.append(confidence)
-        SRC=full_filename
-        OUTPUT.append(SRC)
+        img_base64 = Image.fromarray(Photo.astype('uint8'))
+        buffered = BytesIO()
+        img_base64.save(buffered, format="JPEG")
+        img_base64_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
+        OUTPUT.append(img_base64_str)
         accuracy=confidence*100
         OUTPUT.append(accuracy)
         return redirect("/prediction_interface")
@@ -66,7 +68,14 @@ def getting_form_data():
 
 @app.route('/prediction_interface')
 def prediction_interface():
-    return render_template('prediction_interface.html' , name=OUTPUT[0],category=OUTPUT[1],confidence=OUTPUT[2],user_image=OUTPUT[3],accuracy=OUTPUT[4])
+    return render_template(
+                            'prediction_interface.html' ,
+                            name=OUTPUT[0],
+                            category=OUTPUT[1],
+                            confidence=OUTPUT[2],
+                            user_image=OUTPUT[3],
+                            accuracy=OUTPUT[4]
+                        )
     
 
 #return render_template('prediction_interface.html' , name=OUTPUT[0],src=OUTPUT[1])
@@ -76,5 +85,5 @@ def prediction_interface():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    app.run(host="0.0.0.0", port=7860)
 

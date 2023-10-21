@@ -53,9 +53,9 @@ The dataset used in this project is sourced from Kaggle, a popular platform for 
 
 If you have any questions, feedback, or need assistance with this project, feel free to reach out. You can contact the project owner using the following methods:
 
-- **Email:** [Click to Email](mailto:vinay.yadav4501@gmail.com)
-- **GitHub Profile:** [Your GitHub Profile](https://github.com/VinayYadava)
-- **Twitter:** [Your Twitter Profile](https://linkedin.com/in/vky18)
+- **Email:** [vinay.yadav4501@gmail.com](mailto:vinay.yadav4501@gmail.com)
+- **GitHub Profile:** [YVinayYadava](https://github.com/VinayYadava)
+- **Linkedin:** [vky18](https://linkedin.com/in/vky18)
 
 We welcome your input and are here to help!
 

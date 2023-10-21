@@ -34,4 +34,4 @@ That's it! You've successfully downloaded the file using the \`wget\` command.
 
 If you encounter any issues or need further assistance, feel free to ask for help.
 
-EOL
+

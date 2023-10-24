@@ -1,4 +1,5 @@
 # Potato Disease Classification
+[![Hugging Face Space](https://img.shields.io/badge/Hugging%20Face-Space-blue)](https://vinayyadava-abc.hf.space)
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/VinayYadava/Potato-Disease/blob/main/training/potato.ipynb)
 ![Project Image](https://drive.google.com/uc?id=18jH2gZQ8G98u_kDPP7Vq_vidTcVUqBQJ)
 

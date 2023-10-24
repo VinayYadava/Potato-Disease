@@ -10,6 +10,7 @@ Welcome to the Potato Disease Classification project, an image classification sy
 - **Python Version:** 3.7
 - **Hosting:** [PythonAnywhere](http://vy36689.pythonanywhere.com)
 - **Web Server:** Flask
+- **Hugging Face Space:** [Potato Disease Classification on Hugging Face Space](https://vinayyadava-abc.hf.space)
 
 ## Installation
 
